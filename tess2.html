@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MasteryNet | SMK TKJ Learning Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            --primary: #4f46e5; /* Indigo */
+            --accent: #f59e0b;  /* Amber */
+            --bg-dark: #070b14; /* Super Dark Blue */
+            --card-bg: rgba(255, 255, 255, 0.03); /* Untuk Glassmorphism */
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-user-select: none; user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            overflow: hidden; position: fixed;
+            width: 100%; height: 100%;
+        }
+
+        /* TYPOGRAPHY ENHANCEMENT */
+        h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.1; }
+        .hero-title { font-size: 4rem; font-weight: 800; background: linear-gradient(to right, #818cf8, #c084fc, #818cf8); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; letter-spacing: -0.05em !important; filter: drop-shadow(0 4px 10px rgba(129, 140, 248, 0.4)); animation: shine 5s linear infinite; }
+        
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* LOGIN STYLES */
+        .login-input {
+            width: 100%;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+        .login-input:focus { border-color: var(--primary); background: rgba(255,255,255,0.08); }
+
+        /* DEKORASI Latar Belakang - Anti Kaku */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; opacity: 0.7; }
+        .particle { position: absolute; background: var(--primary); border-radius: 50%; opacity: 0.1; filter: blur(60px); animation: floatAnim 18s infinite alternate ease-in-out; }
+        
+        /* Mesh Gradient Background */
+        body::before {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image: 
+                radial-gradient(at 20% 15%, rgba(79, 70, 229, 0.2) 0px, transparent 55%),
+                radial-gradient(at 80% 10%, rgba(168, 85, 247, 0.15) 0px, transparent 55%),
+                radial-gradient(at 50% 85%, rgba(245, 158, 11, 0.05) 0px, transparent 55%);
+            filter: blur(25px);
+        }
+
+        @keyframes floatAnim { 
+            0% { transform: translate(0, 0) scale(1); } 
+            50% { transform: translate(120px, 60px) scale(1.15); }
+            100% { transform: translate(-60px, 120px) scale(1); } 
+        }
+
+        /* Global Transition untuk kelembutan */
+        * {
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* UI COMPONENTS */
+        header { padding: 1.2rem 5%; background: rgba(7, 11, 20, 0.5); backdrop-filter: blur(25px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 100; box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .logo-box { display: flex; align-items: center; gap: 14px; font-weight: 800; font-size: 1.3rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .logo-box svg { filter: drop-shadow(0 0 10px var(--primary)); }
+        .xp-meter { background: linear-gradient(135deg, var(--accent), #f97316); color: #000; padding: 7px 18px; border-radius: 50px; font-weight: 800; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+        
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        
+        /* GRID & CARDS - ANTI KAKU */
+        .grid-subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2.5rem; }
+        
+        /* Glassmorphism subject-card */
+        .subject-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            padding: 3rem 2rem; 
+            border-radius: 35px; /* Super rounded */
+            text-align: center; 
+            cursor: pointer; 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::after {
+            content: "";
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+            transform: scale(0); transition: transform 0.6s ease;
+        }
+        .subject-card:hover::after { transform: scale(1); }
+
+        .subject-card:hover { 
+            transform: translateY(-18px) scale(1.03); 
+            border-color: rgba(129, 140, 248, 0.4); 
+            background: rgba(79, 70, 229, 0.06); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 20px rgba(79, 70, 229, 0.25); 
+        }
+        
+        .subject-icon { 
+            width: 75px; height: 75px; margin: 0 auto 2.2rem; 
+            color: var(--primary); 
+            filter: drop-shadow(0 0 18px rgba(79, 70, 229, 0.8)); 
+            stroke-width: 2.8px; 
+            transition: all 0.4s ease;
+        }
+        .subject-card:hover .subject-icon {
+            transform: scale(1.1) rotate(6deg);
+            color: #818cf8;
+        }
+        .subject-card h3 { font-weight: 800; font-size: 1.5rem; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+
+        #screen-start button.subject-card, #screen-login button.subject-card {
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            border: none;
+            border-radius: 60px;
+            box-shadow: 0 12px 30px rgba(79, 70, 229, 0.45);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #screen-start button.subject-card:hover, #screen-login button.subject-card:hover {
+            box-shadow: 0 18px 40px rgba(79, 70, 229, 0.65);
+            transform: translateY(-7px) scale(1.06);
+        }
+
+        /* QUIZ ELEMENTS - GLASSMORPHISM */
+        .quiz-panel { 
+            background: rgba(10, 18, 35, 0.6); 
+            border-radius: 45px; 
+            padding: 3.5rem; 
+            border: 1px solid var(--border); 
+            backdrop-filter: blur(30px); 
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+        
+        .bar-outer { height: 14px; background: rgba(255,255,255,0.04); border-radius: 25px; overflow: hidden; margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.05); }
+        .bar-inner { height: 100%; background: linear-gradient(90deg, #818cf8, #a855f7, #ed6ea0, #818cf8); background-size: 200% auto; width: 0%; transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1); animation: shine 4s linear infinite; }
+        
+        .timer-wrapper { width: 100%; height: 7px; background: rgba(255,255,255,0.02); border-radius: 25px; overflow: hidden; margin-bottom: 2.8rem; }
+        #timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent), #f97316); transition: width 1s linear; border-radius: 25px; }
+
+        .btn-opt { 
+            background: rgba(255,255,255,0.02); 
+            border: 1px solid var(--border); 
+            padding: 1.6rem; 
+            border-radius: 26px; 
+            color: rgba(255,255,255,0.95); 
+            text-align: left; 
+            font-size: 1.18rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); 
+            width: 100%; 
+            margin-bottom: 18px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: 0 6px 8px rgba(0,0,0,0.12);
+        }
+        
+        .btn-opt:hover:not(:disabled) { 
+            background: rgba(255,255,255,0.07); 
+            transform: translateX(12px) scale(1.02); 
+            border-color: rgba(129, 140, 248, 0.6); 
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+        }
+        
+        .btn-opt span { padding-right: 18px; line-height: 1.5; }
+        
+        .correct { 
+            background: linear-gradient(135deg, #15803d, var(--success)) !important; 
+            border-color: #fff !important; 
+            animation: tada 0.6s !important; 
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.6) !important;
+            color: #fff !important;
+        }
+        .wrong { 
+            background: linear-gradient(135deg, #b91c1c, var(--error)) !important; 
+            border-color: #fff !important; 
+            animation: headShake 0.6s !important; 
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.6) !important;
+            color: #fff !important;
+        }
+
+        .stats-row { display: flex; gap: 14px; margin-bottom: 22px; }
+        .stat-pill { padding: 7px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 800; border: 1px solid var(--border); background: rgba(0,0,0,0.25); backdrop-filter: blur(5px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+
+        #question-text { font-size: 1.7rem; font-weight: 700; line-height: 1.3; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+
+        #final-xp { background: linear-gradient(135deg, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 18px rgba(245, 158, 11, 0.6)); }
+        
+        #screen-result button {
+            border-radius: 60px;
+            background: linear-gradient(135deg, #4338ca, var(--primary));
+            border: none;
+            padding: 1.3rem 3.5rem;
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.35);
+        }
+
+        .hidden { display: none !important; }
+
+        @keyframes tada {
+            from { transform: scale3d(1, 1, 1); }
+            10%, 20% { transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg); }
+            30%, 50%, 70%, 90% { transform: scale3d(1.06, 1.06, 1.06) rotate3d(0, 0, 1, 3deg); }
+            40%, 60%, 80% { transform: scale3d(1.06, 1.06, 1.06) rotate3d(0, 0, 1, -3deg); }
+            to { transform: scale3d(1, 1, 1); }
+        }
+
+        @media (max-width: 640px) {
+            .hero-title { font-size: 2.9rem; }
+            .quiz-panel { padding: 2.2rem; border-radius: 35px; }
+            .subject-card { border-radius: 28px; padding: 2.2rem 1.6rem; }
+            .btn-opt { border-radius: 20px; padding: 1.3rem; }
+            #question-text { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <div class="particle" style="width:450px;height:450px;top:-10%;left:-10%"></div>
+        <div class="particle" style="width:380px;height:380px;bottom:10%;right:-5%;background:#a855f7"></div>
+        <div class="particle" style="width:220px;height:220px;top:40%;left:50%;background:#f59e0b; opacity: 0.04"></div>
+    </div>
+
+    <header>
+        <div class="logo-box">
+            <svg style="width:28px;height:28px;stroke-width:3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <span>LYNAP QUIZ TJKT</span>
+        </div>
+        <div id="status-bar" class="hidden animate__animated animate__fadeInDown">
+            <div class="xp-meter">XP: <span id="xp-val">0</span></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="screen-login" class="animate__animated animate__fadeIn">
+            <div style="text-align: center; max-width: 400px; margin: 0 auto;" class="quiz-panel">
+                <h2 style="margin-bottom: 2rem; font-size: 2rem;">Masuk ke MasteryNet</h2>
+                <input type="text" id="login-user" class="login-input" placeholder="Username">
+                <input type="password" id="login-pass" class="login-input" placeholder="Password">
+                <button onclick="attemptLogin()" class="subject-card" style="width: 100%; padding: 1.2rem; color: white; font-weight: 800; font-size: 1.1rem; margin-top: 1rem;">MASUK</button>
+                <p id="login-error" style="color: var(--error); margin-top: 1rem; font-size: 0.9rem; font-weight: bold;" class="hidden">Password Salah!</p>
+            </div>
+        </div>
+
+        <div id="screen-start" class="hidden animate__animated animate__fadeIn">
+            <div style="text-align: center;">
+                <div class="animate__animated animate__backInDown">
+                    <svg style="width:130px;height:130px;color:var(--primary);margin-bottom:2rem;stroke-width:1.5; filter: drop-shadow(0 0 25px var(--primary))" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <h1 class="hero-title animate__animated animate__lightSpeedInLeft">Welcome</h1>
+                <p class="animate__animated animate__fadeInUp animate__delay-1s" style="color: var(--text-sub); margin-bottom: 4.5rem; font-size: 1.3rem; font-weight: 600;">Level Up Kompetensi TJKT Kamu!</p>
+                <button onclick="enterMenu()" class="subject-card animate__animated animate__zoomIn animate__delay-1s" style="display:inline-block; padding: 1.6rem 4.5rem; color: white; font-weight: 800; font-size: 1.3rem; cursor: pointer;">MULAI!</button>
+            </div>
+        </div>
+
+        <div id="screen-menu" class="hidden">
+            <div style="text-align: center; margin-bottom: 3.5rem;">
+                <h1 style="font-size: 2.8rem; font-weight: 800; color: #fff;">Pilih tes yang kamu mau coba</h1>
+                <p style="color: var(--text-sub); font-size: 1.2rem; margin-top: 10px; font-weight: 600;">1 pilihan ada 25 Soal</p>
+            </div>
+            <div class="grid-subjects">
+                <div class="subject-card animate__animated animate__fadeInUp" onclick="startApp('easy')">
+                    <svg class="subject-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <h3>Hardware</h3>
+                </div>
+                <div class="subject-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s" onclick="startApp('medium')">
+                    <svg class="subject-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9"></path></svg>
+                    <h3>OSI Layer</h3>
+                </div>
+                <div class="subject-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s" onclick="startApp('hard')">
+                    <svg class="subject-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    <h3>MikroTik</h3>
+                </div>
+                <div class="subject-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s" onclick="startApp('expert')">
+                    <svg class="subject-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    <h3>Fiber & Security</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-quiz" class="hidden">
+            <div class="quiz-panel animate__animated animate__fadeInRight">
+                <div class="stats-row">
+                    <div class="stat-pill" style="color: var(--success); border-color: rgba(34, 197, 94, 0.4);">✓ <span id="stat-win">0</span></div>
+                    <div class="stat-pill" style="color: var(--error); border-color: rgba(239, 68, 68, 0.4);">✗ <span id="stat-lose">0</span></div>
+                </div>
+                <div class="bar-outer"><div id="progress-bar" class="bar-inner"></div></div>
+                <div class="timer-wrapper"><div id="timer-bar"></div></div>
+                <h2 id="question-text" style="margin-bottom: 2.8rem; min-height: 80px;">Memuat soal...</h2>
+                <div id="options-box"></div>
+            </div>
+        </div>
+
+        <div id="screen-result" class="hidden">
+            <div class="quiz-panel animate__animated animate__zoomIn" style="text-align: center; padding: 4.5rem 3.5rem;">
+                <h2 style="font-size: 2.5rem; font-weight: 800; color: #fff;">Hasil Akhir</h2>
+                <div class="animate__animated animate__bounceIn animate__delay-1s" style="font-size: 6.5rem; font-weight: 800; color: var(--accent); margin: 2rem 0; line-height: 1;" id="final-xp">0</div>
+                <p id="result-desc" style="color: var(--text-sub); margin-bottom: 3.5rem; font-size: 1.3rem; font-weight: 600;"></p>
+                <button onclick="location.reload()" style="padding: 1.1rem 3.5rem; background: var(--primary); color: white; border: none; cursor: pointer;">COBA LAGI</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LOGIN LOGIC
+        function attemptLogin() {
+            const pass = document.getElementById('login-pass').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            if(pass === "tkj1342") {
+                const screenLogin = document.getElementById('screen-login');
+                screenLogin.classList.add('animate__fadeOut');
+                setTimeout(() => {
+                    screenLogin.classList.add('hidden');
+                    document.getElementById('screen-start').classList.remove('hidden');
+                }, 500);
+            } else {
+                errorMsg.classList.remove('hidden');
+                errorMsg.classList.add('animate__shakeX');
+                setTimeout(() => errorMsg.classList.remove('animate__shakeX'), 500);
+            }
+        }
+
+        const db = {
+            easy: [
+                {q: "Topologi jaringan yang pusatnya menggunakan Hub/Switch?", a: ["Bus", "Star", "Ring", "Mesh"], c: 1},
+                {q: "Kabel UTP kategori 5e memiliki kecepatan maksimal?", a: ["10 Mbps", "100 Mbps", "1 Gbps", "10 Gbps"], c: 2},
+                {q: "Warna kabel urutan pertama standar T568B?", a: ["Putih Hijau", "Putih Oranye", "Oranye", "Biru"], c: 1},
+                {q: "Perangkat yang bekerja di Layer 1?", a: ["Router", "Switch", "Hub", "Bridge"], c: 2},
+                {q: "Kepanjangan dari LAN?", a: ["Local Area Network", "Link Area Net", "Large Area Network", "Light Area Network"], c: 0},
+                {q: "Alat untuk memasang konektor RJ-45 ke kabel UTP?", a: ["Obeng", "Tang Crimping", "Solder", "Gunting"], c: 1},
+                {q: "Konektor kabel telepon (2 pin/4 pin)?", a: ["RJ-11", "RJ-45", "BNC", "ST"], c: 0},
+                {q: "Contoh perangkat output adalah?", a: ["Monitor", "Keyboard", "Mouse", "Scanner"], c: 0},
+                {q: "RAM adalah memori yang bersifat?", a: ["Temporary", "Permanen", "Read-only", "Internal"], c: 0},
+                {q: "Hardware 'otak' komputer?", a: ["CPU", "GPU", "HDD", "RAM"], c: 0},
+                {q: "Perintah ping digunakan untuk?", a: ["Cek koneksi", "Copy data", "Hapus file", "Instal driver"], c: 0},
+                {q: "Singkatan dari WWW?", a: ["World Wide Web", "Web Wide World", "Wide World Web", "Web Web World"], c: 0},
+                {q: "Contoh Sistem Operasi?", a: ["Windows", "Office", "Chrome", "VLC"], c: 0},
+                {q: "Satuan terkecil data?", a: ["Bit", "Byte", "Hertz", "Volt"], c: 0},
+                {q: "Kabel untuk PC ke Switch?", a: ["Straight", "Crossover", "Rollover", "Fiber"], c: 0},
+                {q: "Topologi yang setiap komputer terhubung satu sama lain?", a: ["Mesh", "Star", "Ring", "Bus"], c: 0},
+                {q: "Alat tes kabel jaringan?", a: ["LAN Tester", "Multimeter", "Splicer", "OPM"], c: 0},
+                {q: "Kabel jaringan yang menggunakan cahaya?", a: ["Fiber Optic", "UTP", "STP", "Coaxial"], c: 0},
+                {q: "Port USB singkatan dari?", a: ["Universal Serial Bus", "United Serial Bus", "User Serial Bus", "Unit Serial Bus"], c: 0},
+                {q: "Penyimpanan data jangka panjang?", a: ["Harddisk", "RAM", "Cache", "Registry"], c: 0},
+                {q: "Browser dari Google?", a: ["Chrome", "Safari", "Edge", "Firefox"], c: 0},
+                {q: "Tombol keyboard untuk copy?", a: ["Ctrl+C", "Ctrl+V", "Ctrl+X", "Ctrl+Z"], c: 0},
+                {q: "Software gratis disebut?", a: ["Freeware", "Payware", "Shareware", "Malware"], c: 0},
+                {q: "Fungsi modem?", a: ["Modulasi Demodulasi", "Membagi data", "Menyimpan file", "Cetak dokumen"], c: 0},
+                {q: "Bagian komputer untuk daya listrik?", a: ["PSU", "UPS", "Motherboard", "Fan"], c: 0}
+            ],
+            medium: [
+                {q: "Berapa bit jumlah IPv4?", a: ["32", "16", "64", "128"], c: 0},
+                {q: "Subnet mask default kelas C?", a: ["255.255.255.0", "255.0.0.0", "255.255.0.0", "255.255.255.255"], c: 0},
+                {q: "Range IP kelas A?", a: ["0-127", "128-191", "192-223", "224-239"], c: 0},
+                {q: "Berapa bit jumlah IPv6?", a: ["128", "32", "64", "256"], c: 0},
+                {q: "IP 127.0.0.1 disebut sebagai IP?", a: ["Loopback", "Public", "Broadcast", "Gateway"], c: 0},
+                {q: "Layer OSI ke-3?", a: ["Network", "Data Link", "Transport", "Physical"], c: 0},
+                {q: "Protokol untuk web yang aman?", a: ["HTTPS", "HTTP", "FTP", "SSH"], c: 0},
+                {q: "Port default DNS?", a: ["53", "21", "25", "80"], c: 0},
+                {q: "Subnetting prefix /24 setara dengan host?", a: ["254", "126", "62", "30"], c: 0},
+                {q: "Fungsi DHCP?", a: ["Alokasi IP Otomatis", "Keamanan", "Email", "Domain"], c: 0},
+                {q: "Layer OSI yang mengatur kabel dan bit?", a: ["Physical", "Data Link", "Session", "Presentation"], c: 0},
+                {q: "IP 192.168.1.1 termasuk kelas?", a: ["C", "A", "B", "D"], c: 0},
+                {q: "Protokol pengiriman email?", a: ["SMTP", "POP3", "IMAP", "SNMP"], c: 0},
+                {q: "Berapa jumlah oktet pada IPv4?", a: ["4", "2", "6", "8"], c: 0},
+                {q: "CIDR prefix /30 memberikan berapa host?", a: ["2", "1", "4", "6"], c: 0},
+                {q: "Layer OSI untuk pengiriman file (Interface)?", a: ["Application", "Network", "Session", "Transport"], c: 0},
+                {q: "Default Gateway berfungsi untuk?", a: ["Keluar ke jaringan lain", "Penyimpanan", "Keamanan", "Backup"], c: 0},
+                {q: "Port HTTP standar?", a: ["80", "22", "443", "8080"], c: 0},
+                {q: "Subnet Mask /25?", a: ["255.255.255.128", "255.255.255.0", "255.255.255.192", "255.255.255.224"], c: 0},
+                {q: "Translasi IP Lokal ke Publik disebut?", a: ["NAT", "DNS", "DHCP", "VPN"], c: 0},
+                {q: "MAC Address ada pada layer?", a: ["2", "1", "3", "4"], c: 0},
+                {q: "Protokol remote terminal aman?", a: ["SSH", "Telnet", "HTTP", "FTP"], c: 0},
+                {q: "Data pada Layer 3 disebut?", a: ["Packet", "Frame", "Segment", "Bit"], c: 0},
+                {q: "Port SSH?", a: ["22", "21", "23", "25"], c: 0},
+                {q: "Fungsi DNS?", a: ["Ubah Nama ke IP", "Bagi bandwidth", "Kirim file", "Blokir web"], c: 0}
+            ],
+            hard: [
+                {q: "OS Mikrotik berbasis?", a: ["Linux", "Unix", "Windows", "BSD"], c: 0},
+                {q: "App untuk akses Mikrotik GUI?", a: ["Winbox", "Putty", "Wireshark", "TeamViewer"], c: 0},
+                {q: "VLAN ID default?", a: ["1", "0", "10", "100"], c: 0},
+                {q: "Metode routing yang diisi manual?", a: ["Static", "Dynamic", "RIP", "OSPF"], c: 0},
+                {q: "Layer OSI yang mengatur routing?", a: ["Layer 3", "Layer 2", "Layer 4", "Layer 5"], c: 0},
+                {q: "Protokol Cisco untuk cegah Looping?", a: ["STP", "VTP", "HSRP", "RIP"], c: 0},
+                {q: "Administrative Distance RIP?", a: ["120", "90", "110", "1"], c: 0},
+                {q: "CLI Mikrotik untuk cek IP?", a: ["/ip address print", "/ip print", "/ip show", "ipconfig"], c: 0},
+                {q: "Administrative Distance Statik?", a: ["1", "0", "90", "110"], c: 0},
+                {q: "Port default Winbox?", a: ["8291", "80", "22", "443"], c: 0},
+                {q: "Membagi bandwidth di Mikrotik menggunakan?", a: ["Queues", "Firewall", "NAT", "Bridge"], c: 0},
+                {q: "Switch Layer 3 dapat melakukan?", a: ["Routing", "Cabling", "Splicing", "Format"], c: 0},
+                {q: "Data pada Layer 2 disebut?", a: ["Frame", "Packet", "Bit", "Segment"], c: 0},
+                {q: "Protokol routing Link-State?", a: ["OSPF", "RIP", "BGP", "EIGRP"], c: 0},
+                {q: "Wildcard mask dari /24?", a: ["0.0.0.255", "255.255.255.0", "0.0.0.0", "0.0.255.255"], c: 0},
+                {q: "Mode trunk membawa ... VLAN?", a: ["Banyak", "Satu", "Nol", "Dua"], c: 0},
+                {q: "Administrative Distance OSPF?", a: ["110", "90", "120", "20"], c: 0},
+                {q: "Cisco IOS singkatan dari?", a: ["Internetwork OS", "Internet OS", "Input Output Sys", "Internal OS"], c: 0},
+                {q: "Metode load balancing Mikrotik?", a: ["PCC", "RIP", "OSPF", "NAT"], c: 0},
+                {q: "Loopback address IPv6?", a: ["::1", "127.0.0.1", "ff02::1", "fe80::1"], c: 0},
+                {q: "Protokol untuk redundansi gateway?", a: ["HSRP", "VLAN", "STP", "NAT"], c: 0},
+                {q: "Routerboard adalah hardware dari?", a: ["Mikrotik", "Cisco", "Juniper", "TP-Link"], c: 0},
+                {q: "Perintah CLI untuk save di Cisco?", a: ["copy run start", "write", "save", "A & C Benar"], c: 3},
+                {q: "VTP singkatan dari?", a: ["VLAN Trunking Protocol", "Virtual Type Protocol", "VLAN Tunnel Protocol", "Virtual Trunking Protocol"], c: 0},
+                {q: "Maksimal hop count RIP?", a: ["15", "10", "30", "Tak terbatas"], c: 0}
+            ],
+            expert: [
+                {q: "Alat penyambung Fiber Optic?", a: ["Fusion Splicer", "OTDR", "OPM", "Cleaver"], c: 0},
+                {q: "Satuan redaman FO?", a: ["dB", "Watt", "Volt", "Ampere"], c: 0},
+                {q: "Inti kabel FO disebut?", a: ["Core", "Cladding", "Coating", "Buffer"], c: 0},
+                {q: "Alat cek jarak putus kabel FO?", a: ["OTDR", "OPM", "VFL", "Stripper"], c: 0},
+                {q: "Teknologi internet FO ke rumah?", a: ["FTTH", "VLAN", "ADSL", "LAN"], c: 0},
+                {q: "Perangkat pusat GPON?", a: ["OLT", "ONT", "ODP", "Splitter"], c: 0},
+                {q: "Serangan flood traffic disebut?", a: ["DDoS", "Phishing", "SQL Injection", "Trojan"], c: 0},
+                {q: "Port HTTPS?", a: ["443", "80", "8080", "22"], c: 0},
+                {q: "Enkripsi WiFi paling aman saat ini?", a: ["WPA3", "WEP", "WPA", "WPA2-AES"], c: 0},
+                {q: "DMZ digunakan untuk?", a: ["Server Publik", "Backup", "Intranet", "Cabling"], c: 0},
+                {q: "IDS singkatan dari?", a: ["Intrusion Detection System", "Internal Data Set", "Internet Data Sys", "Intrusion Defense Set"], c: 0},
+                {q: "Konektor FO yang diputar/ulir?", a: ["FC", "SC", "LC", "ST"], c: 0},
+                {q: "Penyebab redaman karena kabel tertekuk tajam?", a: ["Macrobending", "Absorption", "Scattering", "Dispersion"], c: 0},
+                {q: "Indeks bias Core harus ... dari Cladding?", a: ["Lebih besar", "Lebih kecil", "Sama", "Nol"], c: 0},
+                {q: "Jenis FO jarak jauh (inti kecil)?", a: ["Single Mode", "Multi Mode", "Coaxial", "UTP"], c: 0},
+                {q: "BGP termasuk protokol routing jenis?", a: ["EGP", "IGP", "Static", "Default"], c: 0},
+                {q: "Port MySQL?", a: ["3306", "80", "443", "22"], c: 0},
+                {q: "Metode akses WiFi?", a: ["CSMA/CA", "CSMA/CD", "Token", "Polling"], c: 0},
+                {q: "Layer OSI enkripsi?", a: ["Presentation", "Network", "Session", "Physical"], c: 0},
+                {q: "IP Privat Kelas A?", a: ["10.x.x.x", "192.168.x.x", "172.16.x.x", "8.8.8.8"], c: 0},
+                {q: "Proxy Server berfungsi untuk?", a: ["Caching/Filtering", "Routing", "Power", "Storage"], c: 0},
+                {q: "Panjang gelombang Single Mode?", a: ["1310nm", "850nm", "100nm", "500nm"], c: 0},
+                {q: "Ping ke diri sendiri tanpa NIC?", a: ["Loopback", "Gateway", "Broadcast", "Multicast"], c: 0},
+                {q: "Alat kupas jaket kabel FO?", a: ["Stripper", "Cleaver", "Splicer", "OPM"], c: 0},
+                {q: "Koneksi SSH menggunakan enkripsi?", a: ["Asymmetric", "Plaintext", "Symmetric", "Hashing"], c: 0}
+            ]
+        };
+
+        let currentQ = [], cursor = 0, score = 0, isLocked = false;
+        let win = 0, lose = 0, timer, timeLeft = 20;
+
+        function enterMenu() {
+            const start = document.getElementById('screen-start');
+            start.classList.add('animate__zoomOut');
+            setTimeout(() => {
+                start.classList.add('hidden');
+                document.getElementById('screen-menu').classList.remove('hidden');
+            }, 500);
+        }
+
+        function startApp(lvl) {
+            document.getElementById('screen-menu').classList.add('hidden');
+            document.getElementById('status-bar').classList.remove('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            currentQ = [...db[lvl]].sort(() => Math.random() - 0.5);
+            cursor = 0; score = 0; win = 0; lose = 0;
+            loadNext();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 20;
+            const bar = document.getElementById('timer-bar');
+            bar.style.width = '100%';
+            timer = setInterval(() => {
+                timeLeft--;
+                bar.style.width = (timeLeft / 20 * 100) + '%';
+                if(timeLeft <= 0) {
+                    clearInterval(timer);
+                    lose++;
+                    document.getElementById('stat-lose').innerText = lose;
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        function loadNext() {
+            isLocked = false;
+            startTimer();
+            const data = currentQ[cursor];
+            const p = Math.round(((cursor + 1) / currentQ.length) * 100);
+            
+            document.getElementById('progress-bar').style.width = p + "%";
+            document.getElementById('question-text').innerText = data.q;
+            
+            const box = document.getElementById('options-box');
+            box.innerHTML = '';
+            
+            let choices = data.a.map((txt, i) => ({ txt, isCorrect: i === data.c }));
+            choices.sort(() => Math.random() - 0.5);
+            
+            choices.forEach((choice, idx) => {
+                const b = document.createElement('button');
+                b.className = 'btn-opt animate__animated animate__fadeInLeft';
+                b.style.animationDelay = (idx * 0.1) + 's';
+                b.innerHTML = `<span>${choice.txt}</span>`;
+                b.onclick = () => checkChoice(choice.isCorrect, b);
+                box.appendChild(b);
+            });
+        }
+
+        function checkChoice(correct, el) {
+            if(isLocked) return;
+            isLocked = true;
+            clearInterval(timer);
+            
+            if(correct) {
+                score += 4; win++;
+                el.classList.add('correct');
+                document.getElementById('xp-val').innerText = score;
+                document.getElementById('stat-win').innerText = win;
+            } else {
+                lose++;
+                el.classList.add('wrong');
+                document.getElementById('stat-lose').innerText = lose;
+                const btns = document.querySelectorAll('.btn-opt');
+                btns.forEach(b => {
+                    const originalData = currentQ[cursor];
+                    if(b.innerText.trim() === originalData.a[originalData.c]) {
+                        b.classList.add('correct');
+                    }
+                });
+            }
+            setTimeout(nextQuestion, 1200);
+        }
+
+        function nextQuestion() {
+            cursor++;
+            if(cursor < currentQ.length) loadNext();
+            else showResult();
+        }
+
+        function showResult() {
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+            document.getElementById('final-xp').innerText = score;
+            document.getElementById('result-desc').innerText = `Skor Akurasi: ${win} / ${currentQ.length} Soal Benar.`;
+        }
+    </script>
+</body>
+</html>
